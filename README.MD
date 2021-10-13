@@ -1,5 +1,5 @@
 ExecutorOfPath gas usage: 1522285
 
-以太最低0.2
-matic：0.045
-ht：0.0045
+eth最低:0.2
+matic至少：0.06
+ht最少：0.006

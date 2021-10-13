@@ -36,7 +36,21 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
         uint256 fromAmount,
         uint256 returnAmount
     );
+
     event SwapCrossChain(address fromToken, address sender, uint256 fromAmount);
+
+    event AddWhiteList(address contractAddress);
+
+    event RemoveWhiteList(address contractAddr);
+
+    event SetFee(uint256 fee);
+
+    event WithdrawETH(uint256 balance);
+
+    event Withdtraw(address token, uint256 balance);
+
+    event SetDev(address _dev);
+
     modifier noExpired(uint256 deadLine) {
         require(deadLine >= block.timestamp, "EXPIRED");
         _;
@@ -62,10 +76,12 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
 
     function addWhiteList(address contractAddr) public onlyOwner {
         isWhiteListed[contractAddr] = true;
+        emit AddWhiteList(contractAddr);
     }
 
     function removeWhiteList(address contractAddr) public onlyOwner {
         isWhiteListed[contractAddr] = false;
+        emit RemoveWhiteList(contractAddr);
     }
 
     /// @notice Excute transactions. 从转入的币中扣除手续费。
@@ -169,22 +185,24 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
 
     function setFee(uint256 _fee) external onlyOwner {
         fee = _fee;
+        emit SetFee(_fee);
     }
 
     function withdrawETH() external onlyOwner {
-        TransferHelper.safeTransferETH(owner(), address(this).balance);
+        uint256 balance = address(this).balance;
+        TransferHelper.safeTransferETH(owner(), balance);
+        emit WithdrawETH(balance);
     }
 
     function withdtraw(address token) external onlyOwner {
-        TransferHelper.safeTransfer(
-            token,
-            owner(),
-            IERC20(token).balanceOf(address(this))
-        );
+        uint256 balance = IERC20(token).balanceOf(address(this));
+        TransferHelper.safeTransfer(token, owner(), balance);
+        emit Withdtraw(token, balance);
     }
 
     function setDev(address _dev) external onlyOwner {
         require(_dev != address(0), "0_ADDRESS_CAN_T_BE_A_DEV");
         dev = _dev;
+        emit SetDev(_dev);
     }
 }
