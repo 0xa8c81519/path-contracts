@@ -5,12 +5,14 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"t:compile": "truffle compile && typechain --target=truffle --outDir build/types/truffle-types \"build/contracts/*.json\""
+		"t:compile": "truffle compile && typechain --target=truffle --outDir build/types/truffle-types \"build/contracts/*.json\"",
+		"g:start": "ganache-cli --deterministic --networkId=5777 --gasLimit=0x2810eb7c --mnemonic=''"
 	},
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
-		"@openzeppelin/contracts": "^4.3.2"
+		"@openzeppelin/contracts": "^4.3.2",
+		"ethers": "^5.4.7"
 	},
 	"devDependencies": {
 		"@truffle/hdwallet-provider": "^1.0.42",
@@ -28,10 +30,11 @@
 		"log4js": "^6.3.0",
 		"mocha": "^8.1.1",
 		"truffle-assertions": "^0.9.2",
+		"truffle-plugin-verify": "^0.5.15",
+		"truffle-typings": "^1.0.8",
 		"ts-node": "^8.10.2",
 		"typechain": "^1.0.5",
 		"typechain-target-truffle": "^1.0.2",
-		"typescript": "3.7.2",
-		"truffle-typings": "^1.0.8"
+		"typescript": "3.7.2"
 	}
 }

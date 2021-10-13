@@ -24,7 +24,7 @@ require('ts-node/register');
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
-const { mnemonic } = require('./secret.js');
+const mnemonics = require('./secret.js');
 const HDWalletProvider = require('@truffle/hdwallet-provider');;
 
 module.exports = {
@@ -56,7 +56,7 @@ module.exports = {
             network_id: "5777",       // Any network (default: none)
         },
         rinkeby: {
-            provider: () => new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/" + projectId),
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://rinkeby.infura.io/v3/" + projectId),
             // provider: () => new HDWalletProvider(mnemonic, "https://api.infura.io/v1/jsonrpc/rinkeby"),
             network_id: 4,       // Rinkeby's id
             gas: 10000000,        // Rinkeby has a lower block limit than mainnet
@@ -66,7 +66,7 @@ module.exports = {
             gasPrice: 7000000000  // 7 gwei (in wei) (default: 100 gwei)
         },
         kovan: {
-            provider: () => new HDWalletProvider(mnemonic, "https://kovan.infura.io/v3/" + projectId),
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://kovan.infura.io/v3/" + projectId),
             network_id: 42,
             gas: 10000000,
             confirmations: 2,
@@ -75,7 +75,7 @@ module.exports = {
             gasPrice: 7000000000
         },
         kovan_skipMigrations: {
-            provider: () => new HDWalletProvider(mnemonic, "https://kovan.infura.io/v3/" + projectId),
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://kovan.infura.io/v3/" + projectId),
             network_id: 42,
             gas: 10000000,
             confirmations: 2,
@@ -84,7 +84,7 @@ module.exports = {
             gasPrice: 7000000000
         },
         kovan_oracle: {
-            provider: () => new HDWalletProvider(mnemonic, "https://kovan.infura.io/v3/" + projectId),
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://kovan.infura.io/v3/" + projectId),
             network_id: 42,
             gas: 10000000,
             confirmations: 2,
@@ -92,8 +92,8 @@ module.exports = {
             skipDryRun: true,
             gasPrice: 7000000000
         },
-        mainnet: {
-            provider: () => new HDWalletProvider(mnemonic, "https://mainnet.infura.io/v3/" + projectId),
+        ethmainnet: {
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://mainnet.infura.io/v3/4d1446a24a744518a10686badaa1119d"),
             network_id: 1,       // Mainnet id
             chain_id: 1,
             gas: 8000000,        // Ropsten has a lower block limit than mainnet
@@ -102,25 +102,15 @@ module.exports = {
             skipDryRun: true,    // Skip dry run before migrations? (default: false for public nets )
             gasPrice: 7000000000  // 7 gwei (in wei) (default: 100 gwei)
         },
-        bsc_main: {
-            provider: () => new HDWalletProvider(mnemonic, "https://bsc-dataseed1.defibit.io/"),
+        bscmainnet: {
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://bsc-dataseed1.defibit.io/"),
             network_id: 56,
             chain_id: 56,
             gas: 3000000,
             skipDryRun: true,
         },
-        _test_bsc: {
-            provider: () => new HDWalletProvider(mnemonic, "https://data-seed-prebsc-1-s2.binance.org:8545/"),
-            network_id: 97,
-            chain_id: 97,
-            // gas: 3000000,
-            // confirmations: 2,
-            // timeoutBlocks: 2000,
-            // skipDryRun: true,
-            // gasPrice: 1800000000
-        },
         bsctestnet: {
-            provider: () => new HDWalletProvider(mnemonic, "https://data-seed-prebsc-1-s2.binance.org:8545/"),
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://data-seed-prebsc-1-s2.binance.org:8545/"),
             network_id: 97,
             chain_id: 97,
             // gas: 3000000,
@@ -129,15 +119,29 @@ module.exports = {
             // skipDryRun: true,
             // gasPrice: 1800000000
         },
-        heco_test: {
-            provider: () => new HDWalletProvider(mnemonic, "https://http-testnet.hecochain.com"),
-            network_id: 256,
-            chain_id: 256,
-            // gas: 3000000,
-            // confirmations: 2,
-            // timeoutBlocks: 2000,
-            // skipDryRun: true,
-            // gasPrice: 1800000000
+        // heco_test: {
+        //     provider: () => new HDWalletProvider(mnemonics.deployer, "https://http-testnet.hecochain.com"),
+        //     network_id: 256,
+        //     chain_id: 256,
+        //     // gas: 3000000,
+        //     // confirmations: 2,
+        //     // timeoutBlocks: 2000,
+        //     // skipDryRun: true,
+        //     // gasPrice: 1800000000
+        // },
+        hecomainnet: {
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://http-mainnet.hecochain.com"),
+            network_id: 128,
+            chain_id: 128,
+            gas: 3000000,
+            skipDryRun: true,
+        },
+        ploygonmainnet: {
+            provider: () => new HDWalletProvider(mnemonics.deployer, "https://polygon-rpc.com/"),
+            network_id: 137,
+            chain_id: 137,
+            gas: 3000000,
+            skipDryRun: true,
         },
         // Another network with more advanced options...
         // advanced: {
@@ -185,4 +189,14 @@ module.exports = {
             }
         },
     },
+    plugins: [
+        'truffle-plugin-verify'
+    ],
+    api_keys: {
+        etherscan: 'MY_API_KEY',
+        bscscan: 'F7KWT15HDUBIWQA7ZDZSEIWYYYGKKRNIZT',
+        hecoinfo: 'MY_API_KEY',
+        ftmscan: 'MY_API_KEY',
+        polygonscan: 'MY_API_KEY',
+    }
 };
