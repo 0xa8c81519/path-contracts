@@ -96,11 +96,11 @@ module.exports = {
             provider: () => new HDWalletProvider(mnemonics.deployer, "https://mainnet.infura.io/v3/4d1446a24a744518a10686badaa1119d"),
             network_id: 1,       // Mainnet id
             chain_id: 1,
-            gas: 8000000,        // Ropsten has a lower block limit than mainnet
-            confirmations: 2,    // # of confs to wait between deployments. (default: 0)
-            timeoutBlocks: 2000,  // # of blocks before a deployment times out  (minimum/default: 50)
-            skipDryRun: true,    // Skip dry run before migrations? (default: false for public nets )
-            gasPrice: 7000000000  // 7 gwei (in wei) (default: 100 gwei)
+            gas: 1600000,        // Ropsten has a lower block limit than mainnet
+            // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+            // timeoutBlocks: 2000,  // # of blocks before a deployment times out  (minimum/default: 50)
+            // skipDryRun: true,    // Skip dry run before migrations? (default: false for public nets )
+            gasPrice: 90000000000  // 7 gwei (in wei) (default: 100 gwei)
         },
         bscmainnet: {
             provider: () => new HDWalletProvider(mnemonics.deployer, "https://bsc-dataseed1.defibit.io/"),
@@ -136,12 +136,12 @@ module.exports = {
             gas: 3000000,
             skipDryRun: true,
         },
-        ploygonmainnet: {
+        polygonmainnet: {
             provider: () => new HDWalletProvider(mnemonics.deployer, "https://polygon-rpc.com/"),
             network_id: 137,
             chain_id: 137,
-            gas: 3000000,
-            skipDryRun: true,
+            // gas: 3000000,
+            // skipDryRun: true,
         },
         // Another network with more advanced options...
         // advanced: {
@@ -193,10 +193,10 @@ module.exports = {
         'truffle-plugin-verify'
     ],
     api_keys: {
-        etherscan: 'MY_API_KEY',
+        etherscan: '7NY823AGXRY87HCW23NSCHFWX558IVQXME',
         bscscan: 'F7KWT15HDUBIWQA7ZDZSEIWYYYGKKRNIZT',
-        hecoinfo: 'MY_API_KEY',
-        ftmscan: 'MY_API_KEY',
-        polygonscan: 'MY_API_KEY',
+        hecoinfo: 'R31CJFM9QQPHK92BRHBJMC7ZT8GXAGVCFH',
+        ftmscan: 'JGRW496M79HKVG62R4FBN5ZYJIYT9W66U8',
+        polygonscan: '8H5IC1NVYRN7EQ12E1ZNXTST8NBYMNG6I8',
     }
 };
