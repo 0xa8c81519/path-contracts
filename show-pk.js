@@ -9,4 +9,5 @@ const mnemonics = require('./secret.js');
 const walletMnemonic = ethers.Wallet.fromMnemonic(mnemonics.deployer);
 // 初始化钱包
 // const wallet = walletMnemonic.connect(provider);
+console.log(walletMnemonic.address);
 console.log(walletMnemonic.privateKey);
