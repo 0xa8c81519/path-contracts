@@ -26,11 +26,11 @@ contract PathProxyFactory is Ownable {
     mapping(address => bool) public isWhiteListed;
 
     event CreateProxy(address dev, uint256 fee, address owner, address factory);
-    event SetFee(uint256 fee);
-    event SetDev(address _dev);
-    event AddWhiteList(address contractAddress);
-    event RemoveWhiteList(address contractAddr);
-    event TransferFactoryTo(address _fac);
+    event SetFee(address _user, uint256 fee);
+    event SetDev(address _user, address _dev);
+    event AddWhiteList(address _user, address contractAddress);
+    event RemoveWhiteList(address _user, address contractAddr);
+    event TransferFactoryTo(address _user, address _fac);
 
     constructor(
         address _owner,
@@ -72,9 +72,17 @@ contract PathProxyFactory is Ownable {
         for (uint256 i = 0; i < users.length; i++) {
             IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[users[i]]);
             proxy.setFee(_fee);
+            emit SetFee(users[i], _fee);
         }
         fee = _fee;
-        emit SetFee(_fee);
+    }
+
+    function setFee(address _user, uint256 _fee) external onlyOwner {
+        require(_user != address(0), "USER_MUST_NOT_0");
+        require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
+        IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[_user]);
+        proxy.setFee(_fee);
+        emit SetFee(_user, _fee);
     }
 
     function setDev(address _dev) external onlyOwner {
@@ -82,9 +90,18 @@ contract PathProxyFactory is Ownable {
         for (uint256 i = 0; i < users.length; i++) {
             IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[users[i]]);
             proxy.setDev(_dev);
+            emit SetDev(users[i], _dev);
         }
         dev = _dev;
-        emit SetDev(_dev);
+    }
+
+    function setDev(address _user, address _dev) external onlyOwner {
+        require(_user != address(0), "USER_MUST_NOT_0");
+        require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
+        require(_dev != address(0), "0_ADDRESS_CAN_T_BE_A_DEV");
+        IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[_user]);
+        proxy.setDev(_dev);
+        emit SetDev(_user, _dev);
     }
 
     function addWhiteList(address contractAddr) public onlyOwner {
@@ -93,10 +110,21 @@ contract PathProxyFactory is Ownable {
         for (uint256 i = 0; i < users.length; i++) {
             IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[users[i]]);
             proxy.addWhiteList(contractAddr);
+            emit AddWhiteList(users[i], contractAddr);
         }
         whiteList.push(contractAddr);
         isWhiteListed[contractAddr] = true;
-        emit AddWhiteList(contractAddr);
+    }
+
+    function addWhiteList(address _user, address contractAddr)
+        public
+        onlyOwner
+    {
+        require(_user != address(0), "USER_MUST_NOT_0");
+        require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
+        require(contractAddr != address(0), "ADDRESS_CAN_T_BE_0");
+        IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[_user]);
+        proxy.addWhiteList(contractAddr);
     }
 
     function removeWhiteList(address contractAddr) public onlyOwner {
@@ -105,6 +133,7 @@ contract PathProxyFactory is Ownable {
         for (uint256 i = 0; i < users.length; i++) {
             IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[users[i]]);
             proxy.removeWhiteList(contractAddr);
+            emit RemoveWhiteList(users[i], contractAddr);
         }
         for (uint256 i = 0; i < whiteList.length; i++) {
             if (whiteList[i] == contractAddr) {
@@ -112,7 +141,18 @@ contract PathProxyFactory is Ownable {
             }
         }
         isWhiteListed[contractAddr] = false;
-        emit RemoveWhiteList(contractAddr);
+    }
+
+    function removeWhiteList(address _user, address contractAddr)
+        public
+        onlyOwner
+    {
+        require(_user != address(0), "USER_MUST_NOT_0");
+        require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
+        require(contractAddr != address(0), "ADDRESS_CAN_T_BE_0");
+        IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[_user]);
+        proxy.removeWhiteList(contractAddr);
+        emit RemoveWhiteList(_user, contractAddr);
     }
 
     function tranferFactoryTo(address _fac) public onlyOwner {
@@ -120,7 +160,16 @@ contract PathProxyFactory is Ownable {
         for (uint256 i = 0; i < users.length; i++) {
             IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[users[i]]);
             proxy.transferFactoryTo(_fac);
+            emit TransferFactoryTo(users[i], _fac);
         }
-        emit TransferFactoryTo(_fac);
+    }
+
+    function tranferFactoryTo(address _user, address _fac) public onlyOwner {
+        require(_user != address(0), "USER_MUST_NOT_0");
+        require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
+        require(_fac != address(0), "FACTORY_CAN_T_BE_0");
+        IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[_user]);
+        proxy.transferFactoryTo(_fac);
+        emit TransferFactoryTo(_user, _fac);
     }
 }
