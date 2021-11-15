@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./lib/TransferHelper.sol";
 
-/// @notice Transaction excutor of Path
-contract ExecutorOfPath is ReentrancyGuard, Ownable {
+/// @notice Transaction's Proxy of Path
+contract GeneralPathProxy is ReentrancyGuard, Ownable {
     using SafeMath for uint256;
 
     string public name;
@@ -22,6 +22,14 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
     address public dev;
 
     uint256 public fee; // wei
+
+    /// @dev 纯通用代理时，factory和owner是同一个地址。
+    address public factory;
+
+    modifier onlyFactory() {
+        require(factory == msg.sender, "ONLY_FACTORY");
+        _;
+    }
 
     /// @notice Swap's log.
     /// @param fromToken token's address.
@@ -51,6 +59,8 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
 
     event SetDev(address _dev);
 
+    event TransferFactoryTo(address _fac);
+
     modifier noExpired(uint256 deadLine) {
         require(deadLine >= block.timestamp, "EXPIRED");
         _;
@@ -63,23 +73,30 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
     constructor(
         address _dev,
         uint256 _fee,
-        address _owner
+        address _owner,
+        address _factory
     ) {
-        name = "Excutor of PATH";
-        symbol = "EXCUTOR_v1";
+        name = "General Path Proxy";
+        symbol = "PROXY_V1";
         require(_dev != address(0), "DEV_CAN_T_BE_0");
         require(_owner != address(0), "OWNER_CAN_T_BE_0");
+        require(_factory != address(0), "FACTORY_CAN_T_BE_0");
         dev = _dev;
         fee = _fee;
+        factory = _factory;
         transferOwnership(_owner);
     }
 
-    function addWhiteList(address contractAddr) public onlyOwner {
+    function addWhiteList(address contractAddr) public onlyFactory {
+        require(contractAddr != address(0), "ADDRESS_CAN_T_BE_0");
+        require(isWhiteListed[contractAddr] == false, "ADDRESS_ALREADY_EXISTS");
         isWhiteListed[contractAddr] = true;
         emit AddWhiteList(contractAddr);
     }
 
-    function removeWhiteList(address contractAddr) public onlyOwner {
+    function removeWhiteList(address contractAddr) public onlyFactory {
+        require(contractAddr != address(0), "ADDRESS_CAN_T_BE_0");
+        require(isWhiteListed[contractAddr] == true, "ADDRESS_NOT_EXISTS");
         isWhiteListed[contractAddr] = false;
         emit RemoveWhiteList(contractAddr);
     }
@@ -183,7 +200,7 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
         }
     }
 
-    function setFee(uint256 _fee) external onlyOwner {
+    function setFee(uint256 _fee) external onlyFactory {
         fee = _fee;
         emit SetFee(_fee);
     }
@@ -200,9 +217,15 @@ contract ExecutorOfPath is ReentrancyGuard, Ownable {
         emit Withdtraw(token, balance);
     }
 
-    function setDev(address _dev) external onlyOwner {
+    function setDev(address _dev) external onlyFactory {
         require(_dev != address(0), "0_ADDRESS_CAN_T_BE_A_DEV");
         dev = _dev;
         emit SetDev(_dev);
+    }
+
+    function transferFactoryTo(address _fac) external onlyFactory {
+        require(_fac != address(0), "FACTORY_CAN_T_BE_0");
+        factory = _fac;
+        emit TransferFactoryTo(_fac);
     }
 }
