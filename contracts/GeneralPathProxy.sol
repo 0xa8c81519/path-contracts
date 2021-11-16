@@ -211,7 +211,7 @@ contract GeneralPathProxy is ReentrancyGuard, Ownable {
         emit WithdrawETH(balance);
     }
 
-    function withdtraw(address token) external onlyOwner {
+    function withdraw(address token) external onlyOwner {
         uint256 balance = IERC20(token).balanceOf(address(this));
         TransferHelper.safeTransfer(token, owner(), balance);
         emit Withdtraw(token, balance);
