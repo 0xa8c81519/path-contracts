@@ -48,9 +48,8 @@ contract PathProxyFactory is Ownable {
     }
 
     function createProxy() public {
-        require(whiteList.length > 0, "NO_WHITE_LIST");
-        require(msg.sender != address(0), "USER_CAN_T_BE_0");
         require(proxyExists[msg.sender] == false, "USER_ALREADY_HAS_A_PROXY");
+        require(whiteList.length > 0, "NO_WHITE_LIST");
         GeneralPathProxy proxy = new GeneralPathProxy(
             dev,
             fee,
@@ -77,7 +76,7 @@ contract PathProxyFactory is Ownable {
         fee = _fee;
     }
 
-    function setFee(address _user, uint256 _fee) external onlyOwner {
+    function setFeeToUser(address _user, uint256 _fee) external onlyOwner {
         require(_user != address(0), "USER_MUST_NOT_0");
         require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
         IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[_user]);
@@ -95,7 +94,7 @@ contract PathProxyFactory is Ownable {
         dev = _dev;
     }
 
-    function setDev(address _user, address _dev) external onlyOwner {
+    function setDevToUser(address _user, address _dev) external onlyOwner {
         require(_user != address(0), "USER_MUST_NOT_0");
         require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
         require(_dev != address(0), "0_ADDRESS_CAN_T_BE_A_DEV");
@@ -116,7 +115,7 @@ contract PathProxyFactory is Ownable {
         isWhiteListed[contractAddr] = true;
     }
 
-    function addWhiteList(address _user, address contractAddr)
+    function addWhiteListToUser(address _user, address contractAddr)
         public
         onlyOwner
     {
@@ -143,7 +142,7 @@ contract PathProxyFactory is Ownable {
         isWhiteListed[contractAddr] = false;
     }
 
-    function removeWhiteList(address _user, address contractAddr)
+    function removeWhiteListFromUser(address _user, address contractAddr)
         public
         onlyOwner
     {

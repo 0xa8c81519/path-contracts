@@ -22,8 +22,7 @@ contract("GeneralPathProxy", accounts => {
 		return GeneralPathProxy.deployed()
 			.then(proxy => {
 				let contractAddr = '0x96cFA408CA039d9Afea0b8227be741Ef52e8a037';
-				return proxy.addWhiteList(contractAddr).then(res => {
-				}).then(() => {
+				return proxy.addWhiteList(contractAddr).then(() => {
 					return proxy.removeWhiteList(contractAddr).then(() => {
 						return proxy.setDev(accounts[1]).then(() => {
 							return proxy.setFee('300000000000000').then(() => {
