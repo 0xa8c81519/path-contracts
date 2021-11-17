@@ -154,7 +154,7 @@ contract PathProxyFactory is Ownable {
         emit RemoveWhiteList(_user, contractAddr);
     }
 
-    function tranferFactoryTo(address _fac) public onlyOwner {
+    function transferFactoryTo(address _fac) public onlyOwner {
         require(_fac != address(0), "FACTORY_CAN_T_BE_0");
         for (uint256 i = 0; i < users.length; i++) {
             IGeneralPathProxy proxy = IGeneralPathProxy(proxyMap[users[i]]);
@@ -163,7 +163,7 @@ contract PathProxyFactory is Ownable {
         }
     }
 
-    function tranferFactoryTo(address _user, address _fac) public onlyOwner {
+    function transferFactoryToForUser(address _user, address _fac) public onlyOwner {
         require(_user != address(0), "USER_MUST_NOT_0");
         require(proxyExists[_user] == true, "USER_HAVE_NOT_ANY_PROXY");
         require(_fac != address(0), "FACTORY_CAN_T_BE_0");
