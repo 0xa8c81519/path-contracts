@@ -212,6 +212,7 @@ contract GeneralPathProxy is ReentrancyGuard, Ownable {
     }
 
     function withdraw(address token) external onlyOwner {
+        require(token != address(0), "TOKEN_MUST_NOT_BE_0");
         uint256 balance = IERC20(token).balanceOf(address(this));
         TransferHelper.safeTransfer(token, owner(), balance);
         emit Withdtraw(token, balance);

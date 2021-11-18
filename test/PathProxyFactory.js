@@ -21,7 +21,7 @@ let contractAddress = '0x96cFA408CA039d9Afea0b8227be741Ef52e8a037';
 
 contract("PathProxyFactory", accounts => {
 
-	it('no-owner should add white list failed.', async () => {
+	it('非Owner角色添加白名单，应该执行失败。', async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.addWhiteList(contractAddress, { from: accounts[1] });
@@ -31,7 +31,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:caller is not the owner)/);
 		}
 	});
-	it("no white list should create proxy failed.", async () => {
+	it("没有白名单数据时创建proxy，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.createProxy();
@@ -41,7 +41,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:NO_WHITE_LIST)/);
 		}
 	});
-	it('owner should add white list success.', async () => {
+	it('Owner添加白名单，应该执行成功。', async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.addWhiteList(contractAddress);
@@ -50,7 +50,7 @@ contract("PathProxyFactory", accounts => {
 			assert.equal(1, 0, 'add white list failed!');
 		}
 	});
-	it("setFee to user who haven't a proxy should failed.", async () => {
+	it("给没有proxy的用户设置proxy的fee，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		let fee = ethers.utils.parseEther('0.004');
 		try {
@@ -61,7 +61,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_HAVE_NOT_ANY_PROXY)/);
 		}
 	});
-	it("setDev to user who haven't a proxy should failed.", async () => {
+	it("给没有proxy的用户设置proxy的dev地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.setDevToUser(accounts[0], accounts[1]);
@@ -71,7 +71,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_HAVE_NOT_ANY_PROXY)/);
 		}
 	});
-	it("add white list to who have no proxy should failed.", async () => {
+	it("给没有proxy的用户添加白名单，应该之行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.addWhiteListToUser(accounts[0], contractAddress);
@@ -81,7 +81,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_HAVE_NOT_ANY_PROXY)/);
 		}
 	});
-	it("remove white list from who have no proxy should failed.", async () => {
+	it("移除没有proxy的用户的白名单，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteListFromUser(accounts[0], contractAddress);
@@ -92,7 +92,7 @@ contract("PathProxyFactory", accounts => {
 		}
 	});
 	// create proxy success.
-	it("should create proxy success.", async () => {
+	it("为accounts[0]创建proxy，应该成功。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.createProxy();
@@ -103,7 +103,7 @@ contract("PathProxyFactory", accounts => {
 		}
 	});
 
-	it("add white list to address 0 should failed.", async () => {
+	it("给0地址添加白名单，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.addWhiteListToUser('0x0000000000000000000000000000000000000000', contractAddress);
@@ -113,7 +113,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_MUST_NOT_0)/);
 		}
 	});
-	it("add address 0 to white list should failed.", async () => {
+	it("给accounts[0]的白名单中添加0地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.addWhiteListToUser(accounts[0], '0x0000000000000000000000000000000000000000');
@@ -123,7 +123,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ADDRESS_CAN_T_BE_0)/);
 		}
 	});
-	it("add contractAddress to accounts[0] should success.", async () => {
+	it("给accounts[0]添加一个非0地址白名单，应该执行成功。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.addWhiteListToUser(accounts[0], accounts[2]);
@@ -132,7 +132,7 @@ contract("PathProxyFactory", accounts => {
 			assert.equal(1, 0, "add white list failed !");
 		}
 	});
-	it("user's address already exists should create proxy failed.", async () => {
+	it("再次给accounts[0]创建proxy，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.createProxy();
@@ -142,7 +142,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_ALREADY_HAS_A_PROXY)/);
 		}
 	});
-	it('setFee use address 0 should failed.', async () => {
+	it('给全0地址设置fee为0.004，应该执行失败', async () => {
 		let factory = await PathProxyFactory.deployed();
 		let fee = ethers.utils.parseEther('0.004');
 		try {
@@ -153,7 +153,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_MUST_NOT_0)/);
 		}
 	});
-	it("set accounts[0]'fee should success.", async () => {
+	it("设置accounts[0]的fee为0.004，应该执行成功。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		let fee = ethers.utils.parseEther('0.004');
 		try {
@@ -163,7 +163,7 @@ contract("PathProxyFactory", accounts => {
 			assert.equal(1, 0, "set accounts[0]'s fee failed!");
 		}
 	});
-	it("set address 0's dev should failed.", async () => {
+	it("给全0地址用户设置dev地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.setDevToUser("0x0000000000000000000000000000000000000000", accounts[1]);
@@ -173,7 +173,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_MUST_NOT_0)/);
 		}
 	});
-	it("set accounts[0]'s dev to address 0 should failed.", async () => {
+	it("给accounts[0]的dev地址设置成全0地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.setDevToUser(accounts[0], '0x0000000000000000000000000000000000000000');
@@ -183,7 +183,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:0_ADDRESS_CAN_T_BE_A_DEV)/);
 		}
 	});
-	it("set dev who haven't any proxy should failed.", async () => {
+	it("给没有proxy的用户accounts[1]设置dev地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.setDevToUser(accounts[1], accounts[0]);
@@ -193,7 +193,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_HAVE_NOT_ANY_PROXY)/);
 		}
 	});
-	it("set accounts[0]'s dev should success.", async () => {
+	it("给accounts[0]设置非0的dev地址，应该执行成功。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.setDevToUser(accounts[0], accounts[1]);
@@ -202,7 +202,7 @@ contract("PathProxyFactory", accounts => {
 			assert.equal(1, 0, "set accounts[0]'s dev failed!");
 		}
 	});
-	it("should not remove address 0 from white list.", async () => {
+	it("移除白名单中的0地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteList('0x0000000000000000000000000000000000000000');
@@ -212,7 +212,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ADDRESS_CAN_T_BE_0)/);
 		}
 	});
-	it("should not remove white list address which not exists.", async () => {
+	it("移除一个不存在的白名单地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteList(accounts[1]);
@@ -222,7 +222,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ADDRESS_NOT_EXISTS)/);
 		}
 	});
-	it("should remove white list success.", async () => {
+	it("移除一个存在的非零白名单地址，应该执行成功。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteList(contractAddress);
@@ -234,7 +234,7 @@ contract("PathProxyFactory", accounts => {
 			assert.equal(1, 0, 'remove address failed!');
 		}
 	});
-	it("remove address 0's white list should failed.", async () => {
+	it("移除0地址用户的白名单，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteListFromUser('0x0000000000000000000000000000000000000000', contractAddress);
@@ -244,7 +244,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:USER_MUST_NOT_0)/);
 		}
 	});
-	it("remove address 0 from white list should failed", async () => {
+	it("移除accounts[0]白名单中的0地址，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteListFromUser(accounts[0], '0x0000000000000000000000000000000000000000');
@@ -254,7 +254,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ADDRESS_CAN_T_BE_0)/);
 		}
 	});
-	it("remove contractAddress form accounts[0]'s proxy should success.", async () => {
+	it("移除accounts[0]的白名单中的非0地址，应该执行成功。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteListFromUser(accounts[0], accounts[2]);
@@ -263,7 +263,7 @@ contract("PathProxyFactory", accounts => {
 			assert.equal(1, 0, "remove white list failed !");
 		}
 	});
-	it("no-owner call transferFactory should failed", async () => {
+	it("非Owner调用转移factory，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.transferFactoryTo(contractAddress, { from: accounts[1] });
@@ -273,7 +273,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:caller is not the owner)/);
 		}
 	});
-	it("no-owner call tranferFactoryToForUser should failed", async () => {
+	it("非Owner调用转移指定用户的factory，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.transferFactoryToForUser(accounts[0], contractAddress, { from: accounts[1] });
@@ -283,7 +283,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:caller is not the owner)/);
 		}
 	});
-	it("accounts[0] transferFactory should success.", async () => {
+	it("转移accounts[0]的factory地址到非0地址，应该执行成功。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.transferFactoryTo(contractAddress);
@@ -292,7 +292,7 @@ contract("PathProxyFactory", accounts => {
 			assert.equal(1, 0, "transfer factory failed !");
 		}
 	});
-	it("accounts[0] transferFactoryToForUser should failed.", async () => {
+	it("非Factory地址调用转移factory，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.transferFactoryToForUser(accounts[0], contractAddress);
@@ -302,7 +302,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ONLY_FACTORY)/);
 		}
 	});
-	it("no-factory call proxy's addWhiteList should failed", async () => {
+	it("非Factory调用proxy添加白名单，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.addWhiteListToUser(accounts[0], contractAddress);
@@ -312,7 +312,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ONLY_FACTORY)/);
 		}
 	});
-	it("no-factory call proxy's removeWhiteList should failed", async () => {
+	it("非Factory调用proxy移除白名单，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.removeWhiteListFromUser(accounts[0], contractAddress);
@@ -322,7 +322,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ONLY_FACTORY)/);
 		}
 	});
-	it("no-factory call proxy's setFee should failed", async () => {
+	it("非Factory设置proxy的fee，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		let fee = ethers.utils.parseEther('0.004');
 		try {
@@ -333,7 +333,7 @@ contract("PathProxyFactory", accounts => {
 			expect(e.message).to.match(/(?:ONLY_FACTORY)/);
 		}
 	});
-	it("no-factory call proxy's setDev should failed", async () => {
+	it("非Factory设置proxy的dev，应该执行失败。", async () => {
 		let factory = await PathProxyFactory.deployed();
 		try {
 			await factory.setDevToUser(accounts[0], accounts[1]);
